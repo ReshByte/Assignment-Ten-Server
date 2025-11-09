@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const port = 5000;
 
@@ -33,6 +33,27 @@ async function run() {
     app.get('/arts',async(req,res) => {
         const result = await artifyCollection.find().toArray()
         res.send(result)
+    })
+
+    app.post('/arts', async(req,res) => {
+        const data = req.body
+        console.log(data);
+        const result = await artifyCollection.insertOne(data)
+        res.send({
+            success:true,
+            result
+        })
+    })
+
+    app.get('/arts/:id', async(req,res) => {
+        const {id} = req.params;
+        console.log(id);
+        const result = await artifyCollection.findOne({_id: new ObjectId(id)});
+
+        res.send({
+            success: true,
+            result
+        })
     })
    
     await client.db("admin").command({ ping: 1 });

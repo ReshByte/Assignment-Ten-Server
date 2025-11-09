@@ -45,6 +45,14 @@ async function run() {
         })
     })
 
+      app.get('/arts/user', async (req, res) => {
+      const { email } = req.query;
+      console.log(email);
+      
+      const result = await artifyCollection.find({email:email}).toArray();
+      res.send(result);
+    });
+
     app.get('/arts/:id', async(req,res) => {
         const {id} = req.params;
         console.log(id);
@@ -55,6 +63,10 @@ async function run() {
             result
         })
     })
+
+
+
+
    
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");

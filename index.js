@@ -53,6 +53,24 @@ async function run() {
       res.send(result);
     });
 
+    
+  app.delete('/arts/:id', async (req, res) => {
+   try {
+    const { id } = req.params;
+    const result = await artifyCollection.deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount > 0) {
+      res.send({ success: true, message: 'Artwork deleted successfully' });
+    } else {
+      res.status(404).send({ success: false, message: 'Artwork not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ success: false, message: 'Server error' });
+  }
+});
+
+
     app.get('/arts/:id', async(req,res) => {
         const {id} = req.params;
         console.log(id);

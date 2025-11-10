@@ -90,6 +90,8 @@ async function run() {
       res.send(result);
     });
 
+    
+
     app.delete('/favorites/:id', async (req, res) => {
       const { id } = req.params;
       const result = await favoritesCollection.deleteOne({ _id: new ObjectId(id) });

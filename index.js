@@ -25,9 +25,11 @@ async function run() {
     const artifyCollection = db.collection("artify-collection");
     const favoritesCollection = db.collection("favorites-collection");
 
-    // Get all arts
+    // Get all arts (optionally filter by user email)
     app.get("/arts", async (req, res) => {
-      const result = await artifyCollection.find().toArray();
+      const { email } = req.query;
+      const query = email ? { email } : {};
+      const result = await artifyCollection.find(query).toArray();
       res.send(result);
     });
 
@@ -78,8 +80,7 @@ async function run() {
           { $inc: { likes: 1 } },
           { returnDocument: "after" }
         );
-        console.log(result);
-        if (result.likes) {
+        if (result) {
           res.send({ success: true, likes: result.likes });
         } else {
           res.send({ success: false });
@@ -96,8 +97,7 @@ async function run() {
         userEmail: favorite.userEmail,
         artId: favorite.artId,
       });
-      if (exists)
-        return res.send({ success: false, message: "Already in favorites" });
+      if (exists) return res.send({ success: false, message: "Already in favorites" });
 
       const result = await favoritesCollection.insertOne(favorite);
       res.send({ success: true, result });
@@ -133,5 +133,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
-
